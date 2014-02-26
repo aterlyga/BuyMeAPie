@@ -1,0 +1,76 @@
+@CHARSET "UTF-8";
+
+h1 {
+	margin-top: 0px;
+	margin-bottom: 20px;
+}
+
+h2{
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+table {
+	table-layout: fixed;
+	height:25px;
+    border-collapse: collapse;
+    vertical-align: middle;
+}
+
+#item_to_buy, #item_to_buy td {
+	width:100px;
+	border: 3px solid red;
+	text-align: center;
+	padding: 5px;
+}
+
+#button img:HOVER {
+	width: 42px;
+	height: 42px;
+}
+
+#item_to_buy input {
+	font-size: medium;
+}
+
+#table_of_items_to_buy {
+	width: 300px;
+	height: auto;
+}
+
+#table_of_items_to_buy, #table_of_items_to_buy th, #table_of_items_to_buy td {
+	text-align: center;
+	border: 3px solid black;
+	vertical-align: middle;
+	padding: 0px 2px;
+}
+
+#table_of_items_to_buy tbody {
+	cursor: pointer;
+}
+
+#table_of_items_to_buy tbody tr:hover {
+	font-size: 120%;
+	font-style: italic;
+	font-weight: bold;
+	
+}
+
+.purchased {
+	background-color: #dc3b19;
+	text-decoration: line-through;
+}
+
+p {
+	margin: 0px;
+	padding: 20px;
+}
+
+p span:HOVER {
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#confirm_truncate {
+	display: none;
+}

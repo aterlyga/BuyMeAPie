@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Buy me a pie</title>
+<script src="scripts/jquery-2.0.3.js"></script>
+<!-- <script src="scripts/jquery-2.0.3.min.js"></script> -->
+<script src="scripts/jquery-ui.js"></script>
+<script src="scripts/presenter.js"></script>
+<script src="scripts/helper.js"></script>
+
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+</head>
+
+<body>
+	<h1>Вибір продуктів</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Назва</th>
+				<th>Кількість</th>
+				<th>Додати позицію</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr id="item_to_buy">
+				<td><input type="text" id="search" placeholder="Оберіть продукт..." autofocus></td>
+				<td><input type="text" id="amount"></td>
+				<td><button type="button" id="button" onclick="addItemToBuy()"><img alt="add" src="images/add.png"></button>
+			</tr>
+		</tbody>
+	</table>
+
+	<div id="list_of_items_to_buy">
+		<h2>Список закупок</h2>
+		<table id="table_of_items_to_buy">
+			<thead>
+				<tr align="center">
+					<th>Змінити</th>
+					<th>Назва</th>
+					<th>Кількість</th>
+				</tr>
+			</thead>
+			<tbody></tbody>	
+		</table>
+	</div>
+	
+	<p><span id="truncate">ОЧИСТИТИ СПИСОК</span></p>
+	
+	<div id="confirm_truncate">
+		<span>
+			Table will be permanently deleted and cannot be recovered.<br>
+			DELETE ALL ITEMS?
+		</span>
+	</div>
+</body>
+</html>
