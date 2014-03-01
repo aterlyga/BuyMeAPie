@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class EditItemToBuyServlet extends BuyMeAPie {
+public class EditItemToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -14,7 +14,7 @@ import javax.servlet.http.*;
 import com.buymeapie.Error;
 import com.google.gson.Gson;
 
-public class GetItemsToBuyServlet extends BuyMeAPie {
+public class GetItemsToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
