@@ -2,75 +2,65 @@ package com.buymeapie;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class ItemAutocompleteServlet extends BuyMeAPie {
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// Instance for serializing and deserializing json objects
-		Gson gson = new Gson();
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// Serializing json using gson
-		ArrayList<Item> forNameResponse = new ArrayList<Item>();
+		GsonParser gsonParser = GsonParser.getGsonParserInstance();
 
-		// Deserializing json using gson
-		String itemName = gson.fromJson(request.getParameter("items_to_buy"),
-				String.class);
+		Item item = gsonParser.getItem();
+		String itemName = item.getName();
 
-		if (ValidateRequestParameter.validateItemToBuy(itemName) == 1) {
+		ArrayList<Item> itemNamesArrayResponse = new ArrayList<Item>();
 
-			PreparedStatement selectName = null;
+		PreparedStatement selectName = null;
 
-			ResultSet selectedNames = null;
+		ResultSet selectedNames = null;
 
-			try {
-				// Connecting to DB
-				Connection connection = DatabaseConnection.getConnect();
+		try {
+			// Connecting to DB
+			Connection connection = DatabaseConnection.getConnect();
 
-				// selecting match in autocomplete widget
-				selectName = connection
-						.prepareStatement("SELECT name FROM item WHERE name LIKE ?;");
-				selectName.setString(1, "%" + itemName + "%");
-				selectedNames = selectName.executeQuery();
+			// selecting match in autocomplete widget
+			selectName = connection.prepareStatement("SELECT name FROM item WHERE name LIKE ?;");
 
-				while (selectedNames.next()) {
-					String name = selectedNames.getString("name");
-					Item item = new Item();
-					item.setName(name);
-					forNameResponse.add(item);
-				}
+			selectName.setString(1, "%" + itemName + "%");
+			selectedNames = selectName.executeQuery();
 
-				String nameResponse = gson.toJson(forNameResponse);
-				response.setCharacterEncoding("UTF-8");
-				PrintWriter out = response.getWriter();
-				out.print(nameResponse);
-				out.flush();
-				out.close();
-
-			} catch (Exception e) {
-				// write to log file
-				e.printStackTrace();
-
-				processError(Error.ERROR_INTERNAL_SERVER, response);
+			while (selectedNames.next()) {
+				String name = selectedNames.getString("name");
+				Item newItem = new Item();
+				newItem.setName(name);
+				itemNamesArrayResponse.add(newItem);
 			}
-		} else {
-			try {
-				throw new Exception();
-			} catch (Exception e) {
-				e.printStackTrace();
-				processError(Error.ERROR_SOME_OTHER, response);
-			}
+
+			String itemNamesResponse = gsonParser.createJsonForResponse(itemNamesArrayResponse);
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter out = response.getWriter();
+			out.print(itemNamesResponse);
+			out.flush();
+			out.close();
+
+		} catch (Exception e) {
+			// write to log file
+			e.printStackTrace();
+
+			processError(Error.ERROR_INTERNAL_SERVER, response);
 		}
 	};
 }

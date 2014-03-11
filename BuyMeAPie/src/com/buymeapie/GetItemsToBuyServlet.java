@@ -17,12 +17,10 @@ import com.google.gson.Gson;
 public class GetItemsToBuyServlet extends BuyMeAPie {
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// Serializing json using gson
-		Gson gson = new Gson();
-		Collection<ItemToBuy> forJsonResponse = new ArrayList<ItemToBuy>();
+		Collection<ItemToBuy> itemsToBuyCollectionResponse = new ArrayList<ItemToBuy>();
+		GsonParser gsonParser = GsonParser.getGsonParserInstance();
 
 		PreparedStatement itemsToBuy = null;
 		ResultSet itemsToBuyFromDb = null;
@@ -46,10 +44,10 @@ public class GetItemsToBuyServlet extends BuyMeAPie {
 				itemToBuy.setAmount(amount);
 				itemToBuy.setPurchased(purchased);
 
-				forJsonResponse.add(itemToBuy);
+				itemsToBuyCollectionResponse.add(itemToBuy);
 			}
 
-			String jsonResponse = gson.toJson(forJsonResponse);
+			String jsonResponse = gsonParser.createJsonForResponse(itemsToBuyCollectionResponse);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(jsonResponse);

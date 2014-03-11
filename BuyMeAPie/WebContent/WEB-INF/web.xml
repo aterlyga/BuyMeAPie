@@ -1,55 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>BuyMeAPie</display-name>
-  <welcome-file-list>
-    <welcome-file>main.html</welcome-file>
-  </welcome-file-list>
-  <servlet>
-    <servlet-name>New Record In DB Item To Buy</servlet-name>
-    <servlet-class>com.buymeapie.AddItemToBuyServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>New Record In DB Item To Buy</servlet-name>
-    <url-pattern>/add_new_item</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>Get List from DB Item To Buy</servlet-name>
-    <servlet-class>com.buymeapie.GetItemsToBuyServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Get List from DB Item To Buy</servlet-name>
-    <url-pattern>/get_items_to_buy</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>Edit Item To Buy</servlet-name>
-    <servlet-class>com.buymeapie.EditItemToBuyServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Edit Item To Buy</servlet-name>
-    <url-pattern>/edit_item_to_buy</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>Purchase Item To Buy</servlet-name>
-    <servlet-class>com.buymeapie.PurchaseItemToBuyServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Purchase Item To Buy</servlet-name>
-    <url-pattern>/purchase_item_to_buy</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>Autocomplete Item</servlet-name>
-    <servlet-class>com.buymeapie.ItemAutocompleteServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Autocomplete Item</servlet-name>
-    <url-pattern>/item_auto_complete</url-pattern>
-  </servlet-mapping>
-  <servlet>
-  	<servlet-name>ClearListToBuy</servlet-name>
-  	<servlet-class>com.buymeapie.ClearListToBuyServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-  	<servlet-name>ClearListToBuy</servlet-name>
-  	<url-pattern>/truncate_table</url-pattern>
-  </servlet-mapping>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>BuyMeAPie</display-name>
+	<welcome-file-list>
+		<welcome-file>main.html</welcome-file>
+	</welcome-file-list>
+	<servlet>
+		<servlet-name>NewRecordInDBItemToBuy</servlet-name>
+		<servlet-class>com.buymeapie.AddItemToBuyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>NewRecordInDBItemToBuy</servlet-name>
+		<url-pattern>/action/add_new_item_to_buy</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>GetListfromDBItemToBuy</servlet-name>
+		<servlet-class>com.buymeapie.GetItemsToBuyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetListfromDBItemToBuy</servlet-name>
+		<url-pattern>/get_items_to_buy</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>EditItemToBuy</servlet-name>
+		<servlet-class>com.buymeapie.EditItemToBuyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EditItemToBuy</servlet-name>
+		<url-pattern>/action/edit_item_to_buy</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>PurchaseItemToBuy</servlet-name>
+		<servlet-class>com.buymeapie.PurchaseItemToBuyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PurchaseItemToBuy</servlet-name>
+		<url-pattern>/action/purchase_item_to_buy</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>AutocompleteItem</servlet-name>
+		<servlet-class>com.buymeapie.ItemAutocompleteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AutocompleteItem</servlet-name>
+		<url-pattern>/item_auto_complete</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>ClearListToBuy</servlet-name>
+		<servlet-class>com.buymeapie.ClearListToBuyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ClearListToBuy</servlet-name>
+		<url-pattern>/truncate_table</url-pattern>
+	</servlet-mapping>
+	<filter>
+		<filter-name>JsonItemParserFilter</filter-name>
+		<filter-class>com.buymeapie.JsonItemParserFilter</filter-class>
+	</filter>
+	<filter>
+      <filter-name>JsonItemToBuyParserFilter</filter-name>
+      <filter-class>com.buymeapie.JsonItemToBuyParserFilter</filter-class>
+   </filter>
+	<filter>
+		<filter-name>ValidationFilter</filter-name>
+		<filter-class>com.buymeapie.ValidateRequestDataFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>JsonItemParserFilter</filter-name>
+		<url-pattern>/item_auto_complete</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+      <filter-name>JsonItemToBuyParserFilter</filter-name>
+      <url-pattern>/action/*</url-pattern>
+   </filter-mapping>
+   <filter-mapping>
+      <filter-name>ValidationFilter</filter-name>
+      <url-pattern>/item_auto_complete</url-pattern>
+   </filter-mapping>
+	<filter-mapping>
+		<filter-name>ValidationFilter</filter-name>
+		<url-pattern>/action/*</url-pattern>
+	</filter-mapping>
 </web-app>

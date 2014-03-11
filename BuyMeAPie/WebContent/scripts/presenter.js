@@ -7,15 +7,21 @@ var currentRowSelector = null;
 
 
 // Autocomplete suggestion for items to buy
+/**
+ * Autocomplete suggestion for items to buy
+ */
 $(function() {
     //Initialize the autocomplete widget
     $("#search").autocomplete({source: [], autoFocus: true}); 
     
     $("#search").keyup(function () { 
-	searchItem = $(this).val();
-	if (searchItem != "") {
+	searchValue = $(this).val();
+	if (searchValue != "") {
+	    searchItem = {};
+	    searchItem = {"name": searchValue};
+	    
 	    requestToServer("item_auto_complete", searchItem, autocomplete);
-	};
+	}
     });
 });
 	    
@@ -49,7 +55,7 @@ function addItemToBuy() {
     	    "amount": $("#amount").val()
     	});
         
-    	requestToServer("add_new_item", newItemToBuy, insertItemToBuy);
+    	requestToServer("action/add_new_item_to_buy", newItemToBuy, insertItemToBuy);
     	$("#search").val("").focus();
     	$("#amount").val("");
     }
@@ -84,7 +90,7 @@ function editItemToBuy() {
 	});
     };
 
-    requestToServer("edit_item_to_buy", editedItemToBuy, updateView);
+    requestToServer("action/edit_item_to_buy", editedItemToBuy, updateView);
     $("#search").val("").focus();
     $("#amount").val("");
     $("#button").attr("onclick", "addItemToBuy()");
@@ -113,7 +119,7 @@ $(document).ready(function() {
 		"purchased": $(this).find("td").eq(4).text()
 	    });
 	    
-	    requestToServer("purchase_item_to_buy", purchaseItemToBuy, purchaseItem);
+	    requestToServer("action/purchase_item_to_buy", purchaseItemToBuy, purchaseItem);
 	}
     });
 });

@@ -23,8 +23,8 @@ public class BuyMeAPie extends HttpServlet {
 		Error error = new Error(errorCode);
 		
 		// serialize and print to response
-		Gson gson = new Gson();
-		String errorJsonResponse = gson.toJson(error);
+		GsonParser gsonParser = GsonParser.getGsonParserInstance();
+		String errorJsonResponse = gsonParser.createJsonForResponse(error);
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		out.print(errorJsonResponse);

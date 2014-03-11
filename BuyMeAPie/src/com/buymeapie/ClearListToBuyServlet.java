@@ -15,8 +15,8 @@ public class ClearListToBuyServlet extends BuyMeAPie {
 	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Instance for serializing and deserializing json objects
-		Gson gson = new Gson();
+
+		GsonParser gsonParser = GsonParser.getGsonParserInstance();
 
 		Statement truncateTable = null;
 		
@@ -28,7 +28,7 @@ public class ClearListToBuyServlet extends BuyMeAPie {
 			truncateTable = connection.createStatement();
 			truncateTable.executeUpdate(sql);
 		
-			String jsonResponse = gson.toJson(new String[0]);
+			String jsonResponse = gsonParser.createJsonForResponse(new String[0]);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(jsonResponse);
