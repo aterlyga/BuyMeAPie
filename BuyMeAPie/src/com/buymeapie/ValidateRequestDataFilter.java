@@ -1,10 +1,6 @@
 package com.buymeapie;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericDeclaration;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 
 import javax.servlet.Filter;
@@ -13,7 +9,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 
 /**
  * Servlet Filter implementation class ValidateDataFilter
@@ -21,6 +16,7 @@ import javax.servlet.annotation.WebFilter;
 public class ValidateRequestDataFilter implements Filter {
 
 	GsonParser gsonParser = GsonParser.getGsonParserInstance();
+	@SuppressWarnings("unused")
 	private FilterConfig filterConfig = null;
 
 	@Override

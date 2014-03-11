@@ -2,7 +2,6 @@ package com.buymeapie;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class EditItemToBuyServlet extends BuyMeAPie {
 	private static final long serialVersionUID = 1L;

@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 import com.buymeapie.Error;
-import com.google.gson.Gson;
 
 public class GetItemsToBuyServlet extends BuyMeAPie {
 	private static final long serialVersionUID = 1L;

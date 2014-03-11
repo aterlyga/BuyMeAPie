@@ -1,7 +1,6 @@
 package com.buymeapie;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -9,8 +8,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * The purpose of this filter is to parse data in json using Gson library.</br>
@@ -20,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class JsonItemParserFilter implements Filter {
 
+	@SuppressWarnings("unused")
 	private FilterConfig filterConfig = null;
 
 	@Override

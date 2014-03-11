@@ -2,15 +2,12 @@ package com.buymeapie;
 
 import java.util.*;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.sql.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.*;
-import com.google.gson.reflect.*;
 
 // Add new item to ITEM_TO_BUY from input fields
 
