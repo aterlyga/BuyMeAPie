@@ -16,6 +16,11 @@ function refreshView() {
 	    $("#table_of_items_to_buy tr:last").append("<td style = \"display:none\">" + object.purchased + "</td>");
 	});
     });
+	
+	// Re-initialize the new item input widgets
+	$("#search").val("").focus();
+	$("#amount").val("");
+	$("#button").attr("onclick", "addItemToBuy()");
 };
 
 

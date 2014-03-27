@@ -5,15 +5,14 @@ var itemsToBuy = [];
 var currentRowSelector = null;
 	    
 // Initializations for the first page load
-$(document).ready(function() {
-    
+$(document).ready(function() {    
 	// Add jQuery "autocomplete" feature to "search" textbox
     $("#search").autocomplete({
 		source: [], 
 		autoFocus: true
 		}); 
     
-	// Handle the "Key Up" event to appropriately narrow
+	// Add "Key Up" event handler in order to appropriately narrow
 	// the displayed list of products 
     $("#search").keyup(function () { 
 			
@@ -50,18 +49,24 @@ $(document).ready(function() {
 			}
 		});
 	
-	// Ajax success callback
+	// Initialization of the items to buy table
 	var firstPageLoadCallback = function(listOfItemsToBuy) {
 		itemsToBuy = listOfItemsToBuy;
 		refreshView();
 	};
-
-	// Initialization of the items to buy table
 	requestToServer(
 		"get_items_to_buy", 
 		null, 
 		firstPageLoadCallback
 		);
+
+	// Add event handler for "Edit" buttons in the grid
+    $("#table_of_items_to_buy").on(
+		"click", 
+		"img", 
+		editItemToBuy
+		);
+	
 });
 
 // Adding new item to buy with validating data 
@@ -89,53 +94,55 @@ function addItemToBuy() {
 			"action/add_new_item_to_buy", 
 			newItemToBuy, 
 			addItemToBuyCallback
-			);
-    	
-		// Clear controls
-		$("#search").val("").focus();
-    	$("#amount").val("");
+			);    	
     }
 };
     
-// Edit item in list
-$(document).ready(function() {
-    $("#table_of_items_to_buy").on("click", "img", function() {
+// Start editing an item to buy
+function editItemToBuy() {
+	// Initialize the row selector
 	currentRowSelector = "#table_of_items_to_buy tbody tr:eq(" + $(this).parents("tr:first").index() + ")";
-	    
+		
+	// Copy values from the table row to widgets
 	$("#search").val($(currentRowSelector).find("td").eq(2).text());
 	$("#amount").val($(currentRowSelector).find("td").eq(3).text());
-	$("#button").attr("onclick", "editItemToBuy()");
-    });
-});
 	
-function editItemToBuy() {
-    if (validateItemToBuy() != false) {
-	editedItemToBuy = [];
-	editedItemToBuy.push({
-	    "id": $(currentRowSelector).find("td").eq(1).text(),
-	    "name": $("#search").val(),
-	    "amount": $("#amount").val()
-	});
+	// Initialize the "Save" button handler
+	$("#button").attr("onclick", "saveItemToBuy()");
+}
+	
+// Save modified item to buy
+function saveItemToBuy() {
+    if (validateItemToBuy()) {
+		// Initialize ItemToBuy object
+		editedItemToBuy = [];
+		editedItemToBuy.push({
+			"id": $(currentRowSelector).find("td").eq(1).text(),
+			"name": $("#search").val(),
+			"amount": $("#amount").val()
+		});
+	
+		// Ajax success callback
+		var saveItemToBuyCallback = function(editedItemToBuy) {
+			$.each(editedItemToBuy, function(index, object) {
+				$.each(itemsToBuy, function(index, element) {
+					if (element.id == object.id) {
+						element.name = object.name;
+						element.amount = object.amount;
+					};
+				});
+			});
+			refreshView();
+		};
+	
+		// Submit the modified object to server
+	    requestToServer(
+			"action/edit_item_to_buy", 
+			editedItemToBuy, 
+			saveItemToBuyCallback
+			);			
     };
-
-    requestToServer("action/edit_item_to_buy", editedItemToBuy, updateView);
-    $("#search").val("").focus();
-    $("#amount").val("");
-    $("#button").attr("onclick", "addItemToBuy()");
-};
-
-var updateView = function(editedItemToBuy) {
-    $.each(editedItemToBuy, function(index, object) {
-	$.each(itemsToBuy, function(index, element) {
-	    if (element.id == object.id) {
-		element.name = object.name;
-		element.amount = object.amount;
-	    };
-	});
-    });
-    refreshView();
-};
-	
+};	
 
 // Purchased/Not purchased item
 $(document).ready(function() {
