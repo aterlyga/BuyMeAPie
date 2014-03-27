@@ -4,30 +4,6 @@ var itemsToBuy = [];
 // Global variables
 var currentRowSelector = null;
 	    
-// Ajax success callback function for autocomplete
-var autocompleteCallback = function(responseData) {
-    // Initialize the products list variable
-	var productsList = [];
-    
-	// Parse the received response
-	$.each(responseData, function(index, object) {
-		productsList.push(object.name);
-    });
-	
-	// Re-initialize the auto-complete products list
-    $("#search").autocomplete(
-		"option", 
-		"source", 
-		productsList
-		);
-};	    
-
-// Ajax success callback function for initial page load
-var firstPageLoadCallback = function(listOfItemsToBuy) {
-	itemsToBuy = listOfItemsToBuy;
-	refreshView();
-};
-
 // Initializations for the first page load
 $(document).ready(function() {
     
@@ -47,14 +23,39 @@ $(document).ready(function() {
 			// Request matching products list from server
 			if (searchValue != "") {
 				searchItem = {"name": searchValue};
+				
+				// Ajax success callback
+				var autocompleteCallback = function(responseData) {
+					// Initialize the products list variable
+					var productsList = [];
+					
+					// Parse the received response
+					$.each(responseData, function(index, object) {
+						productsList.push(object.name);
+					});
+					
+					// Re-initialize the auto-complete products list
+					$("#search").autocomplete(
+						"option", 
+						"source", 
+						productsList
+						);
+				};	    
+				
 				requestToServer(
-					"item_auto_complete", 	// action name
-					searchItem, 			// search pattern
-					autocompleteCallback	// callback handler
+					"item_auto_complete",
+					searchItem, 
+					autocompleteCallback
 					);
 			}
 		});
 	
+	// Ajax success callback
+	var firstPageLoadCallback = function(listOfItemsToBuy) {
+		itemsToBuy = listOfItemsToBuy;
+		refreshView();
+	};
+
 	// Initialization of the items to buy table
 	requestToServer(
 		"get_items_to_buy", 
@@ -63,28 +64,38 @@ $(document).ready(function() {
 		);
 });
 
-// Adding new item to buy with validating data and displaying new row in list 
+// Adding new item to buy with validating data 
+// and displaying new row in list 
 function addItemToBuy() {
-    if (validateItemToBuy() != false) {
-	newItemToBuy = [];
+    if (validateItemToBuy()) {
+		// Initialize new ItemToBuy object
+		newItemToBuy = [];
     	newItemToBuy.push({
     	    "name": $("#search").val(),
     	    "amount": $("#amount").val()
     	});
-        
-    	requestToServer("action/add_new_item_to_buy", newItemToBuy, insertItemToBuy);
-    	$("#search").val("").focus();
+  
+		// Ajax success callback
+		var addItemToBuyCallback = function(addedItemToBuy) {
+			// Update model using returned objects
+			$.each(addedItemToBuy, function(index, object) {
+				itemsToBuy.push(object);
+			});
+			refreshView();
+		};
+  
+		// Submit the new object to server
+    	requestToServer(
+			"action/add_new_item_to_buy", 
+			newItemToBuy, 
+			addItemToBuyCallback
+			);
+    	
+		// Clear controls
+		$("#search").val("").focus();
     	$("#amount").val("");
     }
 };
-
-var insertItemToBuy = function(addNewItemToBuy) {
-    $.each(addNewItemToBuy, function(index, object) {
-	itemsToBuy.push(object);
-    });
-    refreshView();
-};
-
     
 // Edit item in list
 $(document).ready(function() {
