@@ -1,50 +1,67 @@
-// Modal variable
+// This variable stores the model part of the MVP
 var itemsToBuy = [];
 
 // Global variables
 var currentRowSelector = null;
-
-
-
-// Autocomplete suggestion for items to buy
-/**
- * Autocomplete suggestion for items to buy
- */
-$(function() {
-    //Initialize the autocomplete widget
-    $("#search").autocomplete({source: [], autoFocus: true}); 
-    
-    $("#search").keyup(function () { 
-	searchValue = $(this).val();
-	if (searchValue != "") {
-	    searchItem = {};
-	    searchItem = {"name": searchValue};
-	    
-	    requestToServer("item_auto_complete", searchItem, autocomplete);
-	}
-    });
-});
 	    
 // Ajax success callback function for autocomplete
-var autocomplete = function(autoResult) {
-    var itemsRecievedFromDb = [];
-    $.each(autoResult, function(index, object) {
-	itemsRecievedFromDb.push(object.name);
+var autocompleteCallback = function(responseData) {
+    // Initialize the products list variable
+	var productsList = [];
+    
+	// Parse the received response
+	$.each(responseData, function(index, object) {
+		productsList.push(object.name);
     });
-    $("#search").autocomplete("option",	"source", itemsRecievedFromDb);
+	
+	// Re-initialize the auto-complete products list
+    $("#search").autocomplete(
+		"option", 
+		"source", 
+		productsList
+		);
 };	    
 
-
-// First start of page
-$(document).ready(function() {
-    requestToServer("get_items_to_buy", null, firstPageLoad);
-});
-
-var firstPageLoad = function(listOfItemsToBuy) {
-    itemsToBuy = listOfItemsToBuy;
-    refreshView();
+// Ajax success callback function for initial page load
+var firstPageLoadCallback = function(listOfItemsToBuy) {
+	itemsToBuy = listOfItemsToBuy;
+	refreshView();
 };
 
+// Initializations for the first page load
+$(document).ready(function() {
+    
+	// Add jQuery "autocomplete" feature to "search" textbox
+    $("#search").autocomplete({
+		source: [], 
+		autoFocus: true
+		}); 
+    
+	// Handle the "Key Up" event to appropriately narrow
+	// the displayed list of products 
+    $("#search").keyup(function () { 
+			
+			// Retrieve entered text
+			searchValue = $(this).val();
+			
+			// Request matching products list from server
+			if (searchValue != "") {
+				searchItem = {"name": searchValue};
+				requestToServer(
+					"item_auto_complete", 	// action name
+					searchItem, 			// search pattern
+					autocompleteCallback	// callback handler
+					);
+			}
+		});
+	
+	// Initialization of the items to buy table
+	requestToServer(
+		"get_items_to_buy", 
+		null, 
+		firstPageLoadCallback
+		);
+});
 
 // Adding new item to buy with validating data and displaying new row in list 
 function addItemToBuy() {
