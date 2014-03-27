@@ -66,7 +66,23 @@ $(document).ready(function() {
 		"img", 
 		editItemToBuy
 		);
-	
+
+	// Add event handler for purchasing item when user clicks 
+	// a rw in the table
+    $("#table_of_items_to_buy tbody").on(
+		"click", 
+		"tr", 
+		function(event) {
+			if (!$(event.target).is("img")) {
+				purchasedItemToBuy = [];
+				purchasedItemToBuy.push({
+					"id": $(this).find("td").eq(1).text(),
+					"purchased": $(this).find("td").eq(4).text()
+				});		
+				purchaseItemToBuy(purchasedItemToBuy);
+			}
+		}
+	);
 });
 
 // Adding new item to buy with validating data 
@@ -99,6 +115,10 @@ function addItemToBuy() {
 };
     
 // Start editing an item to buy
+// TODO: Need to pass the ID of the item to buy, which 
+// is retrieved using "currentRowSelector" inside of the event handler.
+// This ID will be used inside of "editItemToBuy" in order to find the name 
+// and amount in the model. This is for cleaner and more understandable code.
 function editItemToBuy() {
 	// Initialize the row selector
 	currentRowSelector = "#table_of_items_to_buy tbody tr:eq(" + $(this).parents("tr:first").index() + ")";
@@ -106,6 +126,9 @@ function editItemToBuy() {
 	// Copy values from the table row to widgets
 	$("#search").val($(currentRowSelector).find("td").eq(2).text());
 	$("#amount").val($(currentRowSelector).find("td").eq(3).text());
+	
+	// TODO: Set the edited item ID in the global variable or hidden input
+	// in order to reuse it in the "saveItemToBuy"
 	
 	// Initialize the "Save" button handler
 	$("#button").attr("onclick", "saveItemToBuy()");
@@ -117,7 +140,7 @@ function saveItemToBuy() {
 		// Initialize ItemToBuy object
 		editedItemToBuy = [];
 		editedItemToBuy.push({
-			"id": $(currentRowSelector).find("td").eq(1).text(),
+			"id": $(currentRowSelector).find("td").eq(1).text(),  // TODO: use the reviously stored ID (see function above)
 			"name": $("#search").val(),
 			"amount": $("#amount").val()
 		});
@@ -144,33 +167,26 @@ function saveItemToBuy() {
     };
 };	
 
-// Purchased/Not purchased item
-$(document).ready(function() {
-    $("#table_of_items_to_buy tbody").on("click", "tr", function(event) {
-	if (!$(event.target).is("img")) {
-	    purchaseItemToBuy = [];
-	    purchaseItemToBuy.push({
-		"id": $(this).find("td").eq(1).text(),
-		"purchased": $(this).find("td").eq(4).text()
-	    });
-	    
-	    requestToServer("action/purchase_item_to_buy", purchaseItemToBuy, purchaseItem);
-	}
-    });
-});
-
-var purchaseItem = function(purchasedItem) {
-    $.each(purchasedItem, function(index, object) {
-	$.each(itemsToBuy, function(index, element) {
-	    if (element.id == object.id) {
-		element.purchased = object.purchased;
-	    };
-	});
-    });
-    refreshView();
-};
-    
-    
+var purchaseItemToBuy = function(itemToBuy) {
+	// Ajax success callback
+	var purchaseItemToBuyCallback = function(purchasedItem) {
+		$.each(purchasedItem, function(index, object) {
+			$.each(itemsToBuy, function(index, element) {
+				if (element.id == object.id) {
+					element.purchased = object.purchased;
+				};
+			});
+		});
+		refreshView();
+	};
+	
+	// Submit an object to server
+	requestToServer(
+		"action/purchase_item_to_buy", 
+		purchasedItem, 
+		purchaseItemToBuyCallback
+		);
+}       
 
 // Clear whole list of items to buy
 $(document).ready(function() {
