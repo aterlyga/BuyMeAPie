@@ -1,4 +1,4 @@
-package com.buymeapie;
+package com.BuyMeAPie;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class ClearListToBuyServlet extends BuyMeAPie {
+public class ClearListToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
