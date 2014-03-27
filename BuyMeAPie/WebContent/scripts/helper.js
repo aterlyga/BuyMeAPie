@@ -51,6 +51,20 @@ function requestToServer(url, json_object, func) {
     }
 }
 
+function serverAlert(errorCode) {
+    switch (errorCode) {
+    case 1:
+	var errorMessage = "Some error in server occured.\nData hasn't been changed." +
+			"\nPlease, tell an administrator about it.";
+	alert(errorMessage);
+	break;
+    case 2:
+	var errorMessage = "Incorect data was sended.\nCheck it, please";
+	alert(errorMessage);
+	break;
+    }
+}
+
 // Validate input field (name)
 function validateItemToBuy() {
     if ($.trim($("#search").val()) == "") {
