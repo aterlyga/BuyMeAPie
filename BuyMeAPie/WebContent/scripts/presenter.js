@@ -83,6 +83,32 @@ $(document).ready(function() {
 			}
 		}
 	);
+	
+	// Confirmation dialog about whole list clearing
+	$("#confirm_truncate").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        buttons: {
+        	"Delete": function() {
+				clearItemsToBuy();
+        	    $(this).dialog("close");
+        	},
+        	"Cancel": function() {
+        	    $(this).dialog("close");
+        	}
+        },
+        closeOnEscape: true,
+        show: {
+        	effect: "bounce",
+        	distance: 3,
+        	times: 3
+        }
+    });
+    
+	$("#truncate").on("click", function() {
+		$("#confirm_truncate").dialog("open");
+    });
 });
 
 // Adding new item to buy with validating data 
@@ -189,36 +215,20 @@ var purchaseItemToBuy = function(itemToBuy) {
 }       
 
 // Clear whole list of items to buy
-$(document).ready(function() {
-    $("#confirm_truncate").dialog({
-        autoOpen: false,
-        resizable: false,
-        modal: true,
-        buttons: {
-        	"Delete": function() {
-        	    requestToServer("truncate_table", null, pageReload);
-        	    $(this).dialog("close");
-        	},
-        	"Cancel": function() {
-        	    $(this).dialog("close");
-        	}
-        },
-        closeOnEscape: true,
-        show: {
-        	effect: "bounce",
-        	distance: 3,
-        	times: 3
-        }
-    });
-    $("#truncate").on("click", function() {
-	$("#confirm_truncate").dialog("open");
-    });
-});
-
-var pageReload = function(emptyItemsToBuy) {
-    itemsToBuy = emptyItemsToBuy;
-    refreshView();
-};
+var clearItemsToBuy = function() {
+	// Ajax success callback
+	var clearItemsToBuyCallback = function() {
+		itemsToBuy = [];
+		refreshView();
+	};
+	
+	// Submit an object to server
+	requestToServer(
+		"truncate_table", 
+		null, 
+		clearItemsToBuyCallback
+		);
+}       
 
 function serverAlert(errorCode) {
     switch (errorCode) {
