@@ -13,7 +13,7 @@ public class Error {
 	@SuppressWarnings("unused")
 	private String error = null;
 
-	protected Error(Integer errorCode) {
+	public Error(Integer errorCode) {
 		setError();
 		this.errorCode = errorCode;
 	}

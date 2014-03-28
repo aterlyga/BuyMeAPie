@@ -1,4 +1,4 @@
-package com.buymeapie;
+package com.buymeapie.filter;
 
 import java.io.IOException;
 
@@ -8,6 +8,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import com.buymeapie.*;
 
 /**
  * The purpose of this filter is to parse data in json using Gson library.</br>

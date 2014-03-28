@@ -1,4 +1,4 @@
-package com.BuyMeAPie;
+package com.buymeapie.servlet;
 
 import java.util.*;
 import java.io.*;
@@ -8,6 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.buymeapie.*;
+import com.buymeapie.Error;
+import com.buymeapie.object.*;
 
 // Add new item to ITEM_TO_BUY from input fields
 

@@ -7,6 +7,8 @@ import java.util.Collection;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import com.buymeapie.object.*;
+
 public class GsonParser {
 	
 	private static GsonParser gsonParser = null;

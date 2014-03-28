@@ -1,4 +1,4 @@
-package com.buymeapie;
+package com.buymeapie.filter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -9,6 +9,9 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import com.buymeapie.*;
+import com.buymeapie.object.*;
 
 /**
  * Servlet Filter implementation class ValidateDataFilter

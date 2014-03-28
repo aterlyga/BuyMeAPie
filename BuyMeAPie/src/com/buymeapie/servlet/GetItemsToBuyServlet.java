@@ -1,6 +1,7 @@
-package com.BuyMeAPie;
+package com.buymeapie.servlet;
 
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,9 @@ import java.util.Collection;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import com.BuyMeAPie.Error;
+import com.buymeapie.*;
+import com.buymeapie.object.*;
+import com.buymeapie.Error;
 
 public class GetItemsToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;

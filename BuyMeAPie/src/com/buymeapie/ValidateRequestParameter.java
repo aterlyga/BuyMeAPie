@@ -6,8 +6,10 @@ import java.util.Iterator;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import com.buymeapie.object.*;
+
 public class ValidateRequestParameter {
-	protected static int validateItemToBuy(Collection<ItemToBuy> itemsToBuy) {
+	public static int validateItemToBuy(Collection<ItemToBuy> itemsToBuy) {
 
 		Iterator<ItemToBuy> iteratorItemToBuy = itemsToBuy.iterator();
 		while (iteratorItemToBuy.hasNext()) {
@@ -36,8 +38,7 @@ public class ValidateRequestParameter {
 			}
 
 			if (purchused != null) {
-				if (Jsoup
-						.isValid(Integer.toString(purchused), Whitelist.none()) == false) {
+				if (Jsoup.isValid(Integer.toString(purchused), Whitelist.none()) == false) {
 					return 0;
 				}
 			}
@@ -46,10 +47,10 @@ public class ValidateRequestParameter {
 		return 1;
 	}
 
-	protected static int validateItem(Item item) {
-		
+	public static int validateItem(Item item) {
+
 		String itemName = item.getName();
-		
+
 		if (itemName != null) {
 			if (Jsoup.isValid(itemName, Whitelist.none()) == false) {
 				return 0;
