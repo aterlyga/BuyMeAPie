@@ -1,4 +1,4 @@
-package com.buymeapie;
+package com.BuyMeAPie;
 
 import java.util.*;
 import java.io.*;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // Add new item to ITEM_TO_BUY from input fields
 
-public class AddItemToBuyServlet extends BuyMeAPie {
+public class AddItemToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

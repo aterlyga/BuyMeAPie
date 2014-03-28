@@ -5,16 +5,16 @@ h1 {
 	margin-bottom: 20px;
 }
 
-h2{
+h2 {
 	margin-top: 10px;
 	margin-bottom: 5px;
 }
 
 table {
 	table-layout: fixed;
-	height:25px;
-    border-collapse: collapse;
-    vertical-align: middle;
+	height: 25px;
+	border-collapse: collapse;
+	vertical-align: middle;
 }
 
 #item_to_buy, #item_to_buy td {
@@ -24,7 +24,7 @@ table {
 	padding: 5px;
 }
 
-#button img:HOVER {
+#button img:hover {
 	width: 42px;
 	height: 42px;
 }
@@ -66,7 +66,7 @@ p {
 	padding: 20px;
 }
 
-p span:HOVER {
+p span:hover {
 	cursor: pointer;
 	font-weight: bold;
 }
