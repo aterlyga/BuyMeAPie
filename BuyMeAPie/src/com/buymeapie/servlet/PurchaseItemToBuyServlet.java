@@ -1,6 +1,9 @@
-package com.BuyMeAPie;
+package com.buymeapie.servlet;
 
+import com.buymeapie.*;
+import com.buymeapie.object.*;
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

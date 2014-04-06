@@ -1,4 +1,4 @@
-package com.BuyMeAPie;
+package com.buymeapie.servlet;
 
 import java.sql.*;
 
@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
+
+import com.buymeapie.*;
+import com.buymeapie.Error;
 
 
 public class BuyMeAPieServlet extends HttpServlet {

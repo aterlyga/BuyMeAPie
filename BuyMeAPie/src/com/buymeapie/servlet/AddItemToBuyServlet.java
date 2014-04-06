@@ -1,4 +1,7 @@
-package com.BuyMeAPie;
+package com.buymeapie.servlet;
+
+import com.buymeapie.*;
+import com.buymeapie.object.*;
 
 import java.util.*;
 import java.io.*;

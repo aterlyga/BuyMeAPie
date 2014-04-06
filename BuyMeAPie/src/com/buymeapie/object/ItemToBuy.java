@@ -1,4 +1,4 @@
-package com.buymeapie;
+package com.buymeapie.object;
 
 public class ItemToBuy {
 	private Integer id;

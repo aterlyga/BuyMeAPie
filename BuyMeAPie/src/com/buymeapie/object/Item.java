@@ -1,4 +1,4 @@
-package com.buymeapie;
+package com.buymeapie.object;
 
 public class Item {
 	private String name;
