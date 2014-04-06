@@ -2,101 +2,95 @@ package com.BuyMeAPie;
 
 import java.util.*;
 import java.io.*;
-import java.sql.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-// Add new item to ITEM_TO_BUY from input fields
-
+// Adds into the database a collection of items to buy. 
+// The collection of items to buy is passed from the client side
+// via HTTP POST.
 public class AddItemToBuyServlet extends BuyMeAPieServlet {
+	
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException {
 
-		GsonParser gsonParser = GsonParser.getGsonParserInstance();
-		Collection<ItemToBuy> items = gsonParser.getItemToBuy();
+		// Retrieve the passed instances of items to buy
+		Collection<ItemToBuy> items = 
+			GsonParser.getInstance().deserializeItemsToBuy(
+				request.getParameter("items_to_buy")
+				);
 
-		Collection<ItemToBuy> itemsToBuyCollectionResponse = new ArrayList<ItemToBuy>();
+		PreparedStatement insertNewItemStatement = null;
+		PreparedStatement selectInsertedItemStatement = null;
 
-		PreparedStatement insertNewItem = null;
-		PreparedStatement selectNewItem = null;
-		PreparedStatement checkName = null;
-		PreparedStatement insertNewName = null;
-
-		ResultSet checkedName = null;
-		ResultSet newItemToBuyFromDb = null;
-
+		// This variable will be used to store the successfully inserted items to buy
+		Collection<ItemToBuy> insertedItemsToBuy = new ArrayList<ItemToBuy>();
+		
 		try {
-
-			// Connecting to DB
+			// Initializing DB connection
 			Connection connection = DatabaseConnection.getConnect();
-
 			connection.setAutoCommit(false);
 
-			checkName = connection.prepareStatement("SELECT name from item WHERE name=?;");
-			insertNewName = connection.prepareStatement("INSERT INTO item (name) VALUES (?);");
+			// Item to buy related statements
+			insertNewItemStatement = 
+				connection.prepareStatement("INSERT INTO item_to_buy (name, amount) VALUES (?,?);");
+			selectInsertedItemStatement = 
+				connection.prepareStatement("SELECT * from item_to_buy ORDER BY id DESC LIMIT 1;");
 
-			insertNewItem = connection.prepareStatement("INSERT INTO item_to_buy (name, amount) VALUES (?,?);");
-			selectNewItem = connection.prepareStatement("SELECT * from item_to_buy ORDER BY id DESC LIMIT 1;");
-
-			// Iterating through array of instances and executing statement
+			// Iterating through collection of instances and executing statements
 			Iterator<ItemToBuy> iterator = items.iterator();
 			while (iterator.hasNext()) {
 				ItemToBuy itemToBuy = iterator.next();
-				checkName.setString(1, itemToBuy.getName());
-				checkedName = checkName.executeQuery();
-
-				if (checkedName.first() == false) {
-					insertNewName.setString(1, itemToBuy.getName());
-					insertNewName.executeUpdate();
-				}
-
-				insertNewItem.setString(1, itemToBuy.getName());
-				insertNewItem.setString(2, itemToBuy.getAmount());
-				insertNewItem.executeUpdate();
+				
+				// Validate if product name already exists and create
+				// a new product in the opposite case
+				createProductIfNotExists(itemToBuy.getName(), connection);
+				
+				// Insert new item to buy
+				insertNewItemStatement.setString(1, itemToBuy.getName());
+				insertNewItemStatement.setString(2, itemToBuy.getAmount());
+				insertNewItemStatement.executeUpdate();
 			}
-
-			// Executing statement and iterating through ResultSet
-			newItemToBuyFromDb = selectNewItem.executeQuery();
-			while (newItemToBuyFromDb.next()) {
-				Integer id = newItemToBuyFromDb.getInt("id");
-				String name = newItemToBuyFromDb.getString("name");
-				String amount = newItemToBuyFromDb.getString("amount");
-				Integer purchased = newItemToBuyFromDb.getInt("purchased");
-
+			
+			// Retrieve the inserted items to buy from the database together with their Ids
+			ResultSet insertedItemsResultSet = selectInsertedItemStatement.executeQuery();
+			while (insertedItemsResultSet.next()) {
 				ItemToBuy itemToBuy = new ItemToBuy();
-				itemToBuy.setId(id);
-				itemToBuy.setName(name);
-				itemToBuy.setAmount(amount);
-				itemToBuy.setPurchased(purchased);
-
-				itemsToBuyCollectionResponse.add(itemToBuy);
+				itemToBuy.setId(insertedItemsResultSet.getInt("id"));
+				itemToBuy.setName(insertedItemsResultSet.getString("name"));
+				itemToBuy.setAmount(insertedItemsResultSet.getString("amount"));
+				itemToBuy.setPurchased(insertedItemsResultSet.getInt("purchased"));
+				insertedItemsToBuy.add(itemToBuy);
 			}
 
 			connection.commit();
 
-			String jsonResponse = gsonParser.createJsonForResponse(itemsToBuyCollectionResponse);
+			String jsonResponse = GsonParser.getInstance().toJson(insertedItemsToBuy);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(jsonResponse);
 			out.flush();
 			out.close();
-
+			
 		} catch (Exception e) {
+			// Rolling back the transaction
+			try {
+                connection.rollback();
+            } catch(SQLException e1) {
+                // write to log file
+				e1.printStackTrace();
+            }
+			
 			// write to log file
 			e.printStackTrace();
 
 			processError(Error.ERROR_INTERNAL_SERVER, response);
+		} finally {
+			// Restoring the auto-commit mode
+			connection.setAutoCommit(true);
 		}
-		// } else {
-		// try {
-		// throw new Exception();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// processError(Error.ERROR_SOME_OTHER, response);
-		// }
 	};
 }

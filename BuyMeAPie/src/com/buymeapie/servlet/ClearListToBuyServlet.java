@@ -9,25 +9,26 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**
+* Deletes all the item to buy records from the database
+*/
 public class ClearListToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
 
-		GsonParser gsonParser = GsonParser.getGsonParserInstance();
-
-		Statement truncateTable = null;
+		Statement truncateTableStatement = null;
 		
 		try {
 			Connection connection = DatabaseConnection.getConnect();
 			
-			//truncating table
+			// Truncating table
 			String sql = "TRUNCATE item_to_buy";
-			truncateTable = connection.createStatement();
-			truncateTable.executeUpdate(sql);
+			truncateTableStatement = connection.createStatement();
+			truncateTableStatement.executeUpdate(sql);
 		
-			String jsonResponse = gsonParser.createJsonForResponse(new String[0]);
+			String jsonResponse = GsonParser.getInstance().toJson(new String[0]);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(jsonResponse);

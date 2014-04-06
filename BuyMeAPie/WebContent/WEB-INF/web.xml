@@ -3,82 +3,75 @@
 	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
-	<display-name>BuyMeAPie</display-name>
+	<display-name>Buy Me a Pie</display-name>
 	<welcome-file-list>
 		<welcome-file>main.html</welcome-file>
 	</welcome-file-list>
+
+	<!-- Servlets & mappings -->
 	<servlet>
-		<servlet-name>NewRecordInDBItemToBuy</servlet-name>
-		<servlet-class>com.buymeapie.AddItemToBuyServlet</servlet-class>
+		<servlet-name>AddItemToBuyServlet</servlet-name>
+		<servlet-class>com.buymeapie.servlet.AddItemToBuyServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>NewRecordInDBItemToBuy</servlet-name>
-		<url-pattern>/action/add_new_item_to_buy</url-pattern>
+		<servlet-name>AddItemToBuyServlet</servlet-name>
+		<url-pattern>/action/add_item_to_buy</url-pattern>
 	</servlet-mapping>
+	
 	<servlet>
-		<servlet-name>GetListfromDBItemToBuy</servlet-name>
-		<servlet-class>com.buymeapie.GetItemsToBuyServlet</servlet-class>
+		<servlet-name>GetItemsToBuyServlet</servlet-name>
+		<servlet-class>com.buymeapie.servlet.GetItemsToBuyServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>GetListfromDBItemToBuy</servlet-name>
-		<url-pattern>/get_items_to_buy</url-pattern>
+		<servlet-name>GetItemsToBuyServlet</servlet-name>
+		<url-pattern>/action/get_items_to_buy</url-pattern>
 	</servlet-mapping>
+	
 	<servlet>
-		<servlet-name>EditItemToBuy</servlet-name>
-		<servlet-class>com.buymeapie.EditItemToBuyServlet</servlet-class>
+		<servlet-name>EditItemToBuyServlet</servlet-name>
+		<servlet-class>com.buymeapie.servlet.EditItemToBuyServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>EditItemToBuy</servlet-name>
+		<servlet-name>EditItemToBuyServlet</servlet-name>
 		<url-pattern>/action/edit_item_to_buy</url-pattern>
 	</servlet-mapping>
+	
 	<servlet>
-		<servlet-name>PurchaseItemToBuy</servlet-name>
-		<servlet-class>com.buymeapie.PurchaseItemToBuyServlet</servlet-class>
+		<servlet-name>PurchaseItemToBuyServlet</servlet-name>
+		<servlet-class>com.buymeapie.servlet.PurchaseItemToBuyServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>PurchaseItemToBuy</servlet-name>
+		<servlet-name>PurchaseItemToBuyServlet</servlet-name>
 		<url-pattern>/action/purchase_item_to_buy</url-pattern>
 	</servlet-mapping>
+	
 	<servlet>
-		<servlet-name>AutocompleteItem</servlet-name>
-		<servlet-class>com.buymeapie.ItemAutocompleteServlet</servlet-class>
+		<servlet-name>ItemAutocompleteServlet</servlet-name>
+		<servlet-class>com.buymeapie.servlet.ItemAutocompleteServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>AutocompleteItem</servlet-name>
-		<url-pattern>/item_auto_complete</url-pattern>
+		<servlet-name>ItemAutocompleteServlet</servlet-name>
+		<url-pattern>/action/item_autocomplete</url-pattern>
 	</servlet-mapping>
+	
 	<servlet>
-		<servlet-name>ClearListToBuy</servlet-name>
-		<servlet-class>com.buymeapie.ClearListToBuyServlet</servlet-class>
+		<servlet-name>ClearListToBuyServlet</servlet-name>
+		<servlet-class>com.buymeapie.servlet.ClearListToBuyServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>ClearListToBuy</servlet-name>
-		<url-pattern>/truncate_table</url-pattern>
+		<servlet-name>ClearListToBuyServlet</servlet-name>
+		<url-pattern>/action/clear_list_to_buy</url-pattern>
 	</servlet-mapping>
-	<filter>
-		<filter-name>JsonItemParserFilter</filter-name>
-		<filter-class>com.buymeapie.JsonItemParserFilter</filter-class>
-	</filter>
-	<filter>
-      <filter-name>JsonItemToBuyParserFilter</filter-name>
-      <filter-class>com.buymeapie.JsonItemToBuyParserFilter</filter-class>
-   </filter>
+	
+	<!-- Filters & mappings -->
 	<filter>
 		<filter-name>ValidationFilter</filter-name>
-		<filter-class>com.buymeapie.ValidateRequestDataFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>JsonItemParserFilter</filter-name>
+		<filter-class>com.buymeapie.filter.ValidateRequestDataFilter</filter-class>
+	</filter>	
+	<!--<filter-mapping>
+		<filter-name>ValidationFilter</filter-name>
 		<url-pattern>/item_auto_complete</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-      <filter-name>JsonItemToBuyParserFilter</filter-name>
-      <url-pattern>/action/*</url-pattern>
-   </filter-mapping>
-   <filter-mapping>
-      <filter-name>ValidationFilter</filter-name>
-      <url-pattern>/item_auto_complete</url-pattern>
-   </filter-mapping>
+	</filter-mapping>-->
 	<filter-mapping>
 		<filter-name>ValidationFilter</filter-name>
 		<url-pattern>/action/*</url-pattern>

@@ -11,41 +11,36 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**
+* Returns a list of products in order to fill teh autocomplete list
+*/
 public class ItemAutocompleteServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
 
-		GsonParser gsonParser = GsonParser.getGsonParserInstance();
-
-		Item item = gsonParser.getItem();
-		String itemName = item.getName();
+		String searchValue = request.getParameter("name");
 
 		ArrayList<Item> itemNamesArrayResponse = new ArrayList<Item>();
-
-		PreparedStatement selectName = null;
-
-		ResultSet selectedNames = null;
 
 		try {
 			// Connecting to DB
 			Connection connection = DatabaseConnection.getConnect();
 
-			// selecting match in autocomplete widget
-			selectName = connection.prepareStatement("SELECT name FROM item WHERE name LIKE ?;");
+			// Retrieving the matching items from DB
+			PreparedStatement selectItemNamesStatement = 
+				connection.prepareStatement("SELECT name FROM item WHERE name LIKE ?;");
+			selectItemNamesStatement.setString(1, "%" + searchValue + "%");
+			ResultSet resultSet = selectItemNamesStatement.executeQuery();
 
-			selectName.setString(1, "%" + itemName + "%");
-			selectedNames = selectName.executeQuery();
-
-			while (selectedNames.next()) {
-				String name = selectedNames.getString("name");
-				Item newItem = new Item();
-				newItem.setName(name);
-				itemNamesArrayResponse.add(newItem);
+			while (resultSet.next()) {
+				Item item = new Item();
+				item.setName(resultSet.getString("name"));
+				itemNamesArrayResponse.add(item);
 			}
 
-			String itemNamesResponse = gsonParser.createJsonForResponse(itemNamesArrayResponse);
+			String itemNamesResponse = GsonParser.getInstance().toJson(itemNamesArrayResponse);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(itemNamesResponse);

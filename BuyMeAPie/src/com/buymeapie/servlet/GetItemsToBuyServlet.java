@@ -13,40 +13,36 @@ import javax.servlet.http.*;
 
 import com.BuyMeAPie.Error;
 
+/**
+* Retrieves and returns all available items to buy
+*/
 public class GetItemsToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
 
 		Collection<ItemToBuy> itemsToBuyCollectionResponse = new ArrayList<ItemToBuy>();
-		GsonParser gsonParser = GsonParser.getGsonParserInstance();
-
-		PreparedStatement itemsToBuy = null;
-		ResultSet itemsToBuyFromDb = null;
+		
 		try {
 			// Connecting to DB
 			Connection connection = DatabaseConnection.getConnect();
 
-			itemsToBuy = connection.prepareStatement("SELECT * FROM item_to_buy;");
-			itemsToBuyFromDb = itemsToBuy.executeQuery();
+			PreparedStatement selectItemsToBuyStatement = connection.prepareStatement("SELECT * FROM item_to_buy;");
+			ResultSet resultSet = selectItemsToBuyStatement.executeQuery();
 
-			while (itemsToBuyFromDb.next()) {
+			while (resultSet.next()) {
 				ItemToBuy itemToBuy = new ItemToBuy();
-
-				Integer id = itemsToBuyFromDb.getInt("id");
-				String name = itemsToBuyFromDb.getString("name");
-				String amount = itemsToBuyFromDb.getString("amount");
-				Integer purchased = itemsToBuyFromDb.getInt("purchased");
-
-				itemToBuy.setId(id);
-				itemToBuy.setName(name);
-				itemToBuy.setAmount(amount);
-				itemToBuy.setPurchased(purchased);
+				
+				itemToBuy.setId(resultSet.getInt("id"));
+				itemToBuy.setName(resultSet.getString("name"));
+				itemToBuy.setAmount(resultSet.getString("amount"));
+				itemToBuy.setPurchased(resultSet.getInt("purchased"));
 
 				itemsToBuyCollectionResponse.add(itemToBuy);
 			}
 
-			String jsonResponse = gsonParser.createJsonForResponse(itemsToBuyCollectionResponse);
+			String jsonResponse = GsonParser.getInstance.toJson(itemsToBuyCollectionResponse);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(jsonResponse);

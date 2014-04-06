@@ -11,7 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * Servlet Filter implementation class ValidateDataFilter
+ * Validates submitted parameters
  */
 public class ValidateRequestDataFilter implements Filter {
 
@@ -27,20 +27,18 @@ public class ValidateRequestDataFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-
-
-		if (gsonParser.getItem() != null) {
-			Item item = gsonParser.getItem();
-			if (ValidateRequestParameter.validateItem(item) == 1) {
-				// pass the request along the filter chain
-				filterChain.doFilter(request, response);
-			}
-		}
-
-		if (gsonParser.getItemToBuy() != null) {
-			Collection<ItemToBuy> itemsToBuy = gsonParser.getItemToBuy();
-			if (ValidateRequestParameter.validateItemToBuy(itemsToBuy) == 1) {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) 
+		throws IOException, ServletException {
+		
+		// Retrieve the passed instances of items to buy
+		Collection<ItemToBuy> items = 
+			GsonParser.getInstance().deserializeItemsToBuy(
+				request.getParameter("items_to_buy")
+				);
+		
+		// Validate the passed list of items to buy
+		if (items != null) {
+			if (ValidateRequestParameter.validateItemToBuy(items)) {
 				// pass the request along the filter chain
 				filterChain.doFilter(request, response);
 			}

@@ -13,66 +13,61 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**
+* Marks an item to buy as "purchased" or vice versa
+*/
 public class PurchaseItemToBuyServlet extends BuyMeAPieServlet {
 	private static final long serialVersionUID = 1L;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) 
+		throws ServletException, IOException {
 
-		GsonParser gsonParser = GsonParser.getGsonParserInstance();
-		Collection<ItemToBuy> items = gsonParser.getItemToBuy();
+		// Retrieve the passed instances of items to buy
+		Collection<ItemToBuy> items = 
+			GsonParser.getInstance().deserializeItemsToBuy(
+				request.getParameter("items_to_buy")
+				);
 
-		Collection<ItemToBuy> itemsToBuyCollectionResponse = new ArrayList<ItemToBuy>();
-
-		PreparedStatement updateItem = null;
-		PreparedStatement selectUpdatedItem = null;
-
-		ResultSet updatedItem = null;
-
+		// This variable will be used to store the successfully updated items to buy
+		Collection<ItemToBuy> updatedItemsToBuy = new ArrayList<ItemToBuy>();
+		
 		try {
 			// Connecting to DB
 			Connection connection = DatabaseConnection.getConnect();
-
 			connection.setAutoCommit(false);
 
-			updateItem = connection.prepareStatement("UPDATE item_to_buy SET purchased=? WHERE ID=?;");
-			selectUpdatedItem = connection.prepareStatement("SELECT id, purchased from item_to_buy WHERE ID=?;");
+			PreparedStatement updateItemStatement = connection.prepareStatement("UPDATE item_to_buy SET purchased=? WHERE ID=?;");
+			PreparedStatement selectUpdatedItemStatement = connection.prepareStatement("SELECT id, purchased from item_to_buy WHERE ID=?;");
 
-			// Iterating through array of gotten instances and executing
+			// Iterating through array of received instances and executing
 			// statement
 			Iterator<ItemToBuy> iterator = items.iterator();
-
 			while (iterator.hasNext()) {
 				ItemToBuy itemToBuy = iterator.next();
+				
 				if (itemToBuy.getPurchased() == 0) {
-					updateItem.setInt(1, 1);
-					updateItem.setInt(2, itemToBuy.getId());
-					updateItem.executeUpdate();
+					updateItemStatement.setInt(1, 1);
 				} else {
-					updateItem.setInt(1, 0);
-					updateItem.setInt(2, itemToBuy.getId());
-					updateItem.executeUpdate();
+					updateItemStatement.setInt(1, 0);
 				}
-
-				selectUpdatedItem.setInt(1, itemToBuy.getId());
+				updateItemStatement.setInt(2, itemToBuy.getId());
+				updateItemStatement.executeUpdate();
+				
+				selectUpdatedItemStatement.setInt(1, itemToBuy.getId());
 			}
 
 			// Executing statement and iterating through ResultSet
-			updatedItem = selectUpdatedItem.executeQuery();
-			while (updatedItem.next()) {
-				Integer id = updatedItem.getInt("id");
-				Integer purchased = updatedItem.getInt("purchased");
-
+			ResultSet resultSet = selectUpdatedItemStatement.executeQuery();
+			while (resultSet.next()) {
 				ItemToBuy itemToBuy = new ItemToBuy();
-				itemToBuy.setId(id);
-				itemToBuy.setPurchased(purchased);
-
-				itemsToBuyCollectionResponse.add(itemToBuy);
+				itemToBuy.setId(resultSet.getInt("id"));
+				itemToBuy.setPurchased(resultSet.getInt("purchased"));
+				updatedItemsToBuy.add(itemToBuy);
 			}
 
 			connection.commit();
 
-			String jsonResponse = gsonParser.createJsonForResponse(itemsToBuyCollectionResponse);
+			String jsonResponse = GsonParser.getInstance().toJson(updatedItemsToBuy);
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
 			out.print(jsonResponse);
@@ -80,17 +75,21 @@ public class PurchaseItemToBuyServlet extends BuyMeAPieServlet {
 			out.close();
 
 		} catch (Exception e) {
+			// Rolling back the transaction
+			try {
+                connection.rollback();
+            } catch(SQLException e1) {
+                // write to log file
+				e1.printStackTrace();
+            }
+			
 			// write to log file
 			e.printStackTrace();
 
 			processError(Error.ERROR_INTERNAL_SERVER, response);
+		} finally {
+			// Restoring the auto-commit mode
+			connection.setAutoCommit(true);
 		}
-		// } else {
-		// try {
-		// throw new Exception();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// processError(Error.ERROR_SOME_OTHER, response);
-		// }
 	};
 }

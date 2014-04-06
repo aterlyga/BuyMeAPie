@@ -2,6 +2,7 @@ package com.buymeapie;
 
 import java.sql.*;
 
+
 public class DatabaseConnection {	
 	
 	private DatabaseConnection() {
@@ -14,7 +15,6 @@ public class DatabaseConnection {
 
 		String databaseUrl = "jdbc:mysql://localhost:3306/buymeapie";
 		String user = "root";
-//		String password = "2021";
 		String password = "2020";
 		
 		Class.forName("com.mysql.jdbc.Driver");
